@@ -8,9 +8,9 @@ if [ ! -f /config/JDownloader.jar ]; then
 fi
 
 # Take ownership of the config directory.
-chown -R $USER_ID:$GROUP_ID /config
+# chown -R $USER_ID:$GROUP_ID /config
 
 # Take ownership of the output directory.
-chown $USER_ID:$GROUP_ID /output
+# chown $USER_ID:$GROUP_ID /output
 
 # vim: set ft=sh :
