@@ -24,7 +24,6 @@ Launch the JDownloader 2 docker container with the following command:
 docker run -d \
     --name=jdownloader-2 \
     -p 5800:5800 \
-    -p 5900:5900 \
     -v /docker/appdata/jdownloader-2:/config:rw \
     -v $HOME/Downloads:/output:rw \
     jlesage/jdownloader-2
@@ -98,6 +97,44 @@ container cannot be changed, but you are free to use any port on the host side.
 |------|-----------------|-------------|
 | 5800 | Mandatory | Port used to access the application's GUI via the web interface. |
 | 5900 | Optional | Port used to access the application's GUI via the VNC protocol.  Optional if no VNC client is used. |
+
+## Docker Compose File
+Here is an example of a `docker-compose.yml` file that can be used with
+[Docker Compose](https://docs.docker.com/compose/overview/).
+
+Make sure to adjust according to your needs.  Note that only mandatory network
+ports are part of the example.
+
+```yaml
+version: '3'
+services:
+  jdownloader-2:
+    build: .
+    ports:
+      - "5800:5800"
+    volumes:
+      - "/docker/appdata/jdownloader-2:/config:rw"
+      - "$HOME/Downloads:/output:rw"
+```
+
+## Docker Image Update
+
+If the system on which the container runs doesn't provide a way to easily update
+the Docker image, the following steps can be followed:
+
+  1. Fetch the latest image:
+```
+docker pull jlesage/jdownloader-2
+```
+  2. Stop the container:
+```
+docker stop jdownloader-2
+```
+  3. Remove the container:
+```
+docker stop jdownloader-2
+```
+  4. Start the container using the `docker run` command.
 
 ## User/Group IDs
 
@@ -188,6 +225,11 @@ The level of security provided by the VNC password depends on two things:
 
 When using a VNC password, it is highly desirable to enable the secure
 connection to prevent sending the password in clear over an unencrypted channel.
+
+**ATTENTION**: Password is limited to 8 characters.  This limitation comes from
+the Remote Framebuffer Protocol [RFC](https://tools.ietf.org/html/rfc6143) (see
+section [7.2.2](https://tools.ietf.org/html/rfc6143#section-7.2.2)).  Any
+characters beyhond the limit are ignored.
 
 [TimeZone]: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
