@@ -21,7 +21,7 @@
 # NOTE: Need to keep Alpine 3.5 until the following bug is resolved:
 #       https://bugs.alpinelinux.org/issues/7372
 # NOTE: glibc version of the image is needed for the 7-Zip-JBinding workaround.
-FROM jlesage/baseimage-gui:alpine-3.5-glibc-v3.1.4
+FROM jlesage/baseimage-gui:alpine-3.5-glibc-v3.2.2
 
 # Define software download URLs.
 ARG JDOWNLOADER_URL=http://installer.jdownloader.org/JDownloader.jar
@@ -64,6 +64,9 @@ RUN \
 RUN \
     APP_ICON_URL=https://raw.githubusercontent.com/jlesage/docker-templates/master/jlesage/images/jdownloader-2-icon.png && \
     install_app_icon.sh "$APP_ICON_URL"
+
+# Temporary fix for glibc cache not being updated automatically.
+RUN /usr/glibc-compat/sbin/ldconfig
 
 # Add files.
 COPY rootfs/ /
