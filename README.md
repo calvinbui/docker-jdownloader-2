@@ -273,6 +273,8 @@ HTTPs.
 When using a VNC client, the VNC connection is performed over SSL.  Note that
 few VNC clients support this method.  [SSVNC] is one of them.
 
+[SSVNC]: http://www.karlrunge.com/x11vnc/ssvnc.html
+
 ### Certificates
 
 Here are the certificate files needed by the container.  By default, when they
@@ -426,5 +428,7 @@ server {
 
 Having troubles with the container or have questions?  Please
 [create a new issue].
+
+For other great Dockerized applications, see https://jlesage.github.io/docker-apps.
 
 [create a new issue]: https://github.com/jlesage/docker-jdownloader-2/issues
