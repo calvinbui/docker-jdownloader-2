@@ -1,5 +1,5 @@
 # Docker container for JDownloader 2
-[![Docker Automated build](https://img.shields.io/docker/automated/jlesage/jdownloader-2.svg)](https://hub.docker.com/r/jlesage/jdownloader-2/) [![Docker Image](https://images.microbadger.com/badges/image/jlesage/jdownloader-2.svg)](http://microbadger.com/#/images/jlesage/jdownloader-2) [![Build Status](https://travis-ci.org/jlesage/docker-jdownloader-2.svg?branch=master)](https://travis-ci.org/jlesage/docker-jdownloader-2) [![GitHub Release](https://img.shields.io/github/release/jlesage/docker-jdownloader-2.svg)](https://github.com/jlesage/docker-jdownloader-2/releases/latest) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/JocelynLeSage)
+[![Docker Automated build](https://img.shields.io/docker/automated/jlesage/jdownloader-2.svg)](https://hub.docker.com/r/jlesage/jdownloader-2/) [![Docker Image](https://images.microbadger.com/badges/image/jlesage/jdownloader-2.svg)](http://microbadger.com/#/images/jlesage/jdownloader-2) [![Build Status](https://travis-ci.org/jlesage/docker-jdownloader-2.svg?branch=master)](https://travis-ci.org/jlesage/docker-jdownloader-2) [![GitHub Release](https://img.shields.io/github/release/jlesage/docker-jdownloader-2.svg)](https://github.com/jlesage/docker-jdownloader-2/releases/latest) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/JocelynLeSage/0usd)
 
 This is a Docker container for JDownloader 2.
 
@@ -61,8 +61,7 @@ Where:
   - `/docker/appdata/jdownloader-2`: This is where the application stores its configuration, log and any files needing persistency.
   - `$HOME/Downloads`: This is where downloaded files are stored.
 
-Browse to `http://your-host-ip:5800` to access the JDownloader 2 GUI.  Files from
-the host appear under the `/storage` folder in the container.
+Browse to `http://your-host-ip:5800` to access the JDownloader 2 GUI.
 
 ## Usage
 
