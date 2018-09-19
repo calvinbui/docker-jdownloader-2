@@ -18,14 +18,12 @@
 # ##############################################################################
 
 # Pull base image.
-# NOTE: Need to keep Alpine 3.5 until the following bug is resolved:
-#       https://bugs.alpinelinux.org/issues/7372
 # NOTE: glibc version of the image is needed for the 7-Zip-JBinding workaround.
-FROM jlesage/baseimage-gui:alpine-3.5-glibc-v3.3.4
+FROM jlesage/baseimage-gui:alpine-3.8-glibc-v3.5.1
 
 # Define software download URLs.
 ARG JDOWNLOADER_URL=http://installer.jdownloader.org/JDownloader.jar
-ARG ORACLEJAVAJRE_URL=http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/server-jre-8u131-linux-x64.tar.gz
+ARG ORACLEJAVAJRE_URL=http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/server-jre-8u181-linux-x64.tar.gz
 
 # Define working directory.
 WORKDIR /tmp
@@ -33,14 +31,15 @@ WORKDIR /tmp
 # Download JDownloader 2.
 RUN \
     mkdir -p /defaults && \
-    wget ${JDOWNLOADER_URL} -O /defaults/JDownloader.jar
+    wget ${JDOWNLOADER_URL} -O /defaults/JDownloader.jar && \
+    chmod +x /defaults/JDownloader.jar
 
 # Download and install Oracle JRE.
 # NOTE: This is needed only for the 7-Zip-JBinding workaround.
 RUN \
     add-pkg --virtual build-dependencies curl && \
     mkdir /opt/jre && \
-    curl -# -L -H "Cookie: oraclelicense=accept-securebackup-cookie" ${ORACLEJAVAJRE_URL} | tar -xz --strip 2 -C /opt/jre jdk1.8.0_131/jre && \
+    curl -# -L -H "Cookie: oraclelicense=accept-securebackup-cookie" ${ORACLEJAVAJRE_URL} | tar -xz --strip 2 -C /opt/jre jdk1.8.0_181/jre && \
     rm -r /opt/jre/lib/oblique-fonts && \
     del-pkg build-dependencies
 
