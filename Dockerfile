@@ -19,11 +19,14 @@
 
 # Pull base image.
 # NOTE: glibc version of the image is needed for the 7-Zip-JBinding workaround.
-FROM jlesage/baseimage-gui:alpine-3.8-glibc-v3.5.1
+FROM jlesage/baseimage-gui:alpine-3.9-glibc-v3.5.2
+
+# Define software versions.
+ARG JAVAJRE_VERSION=8.212.04.2
 
 # Define software download URLs.
 ARG JDOWNLOADER_URL=http://installer.jdownloader.org/JDownloader.jar
-ARG ORACLEJAVAJRE_URL=http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/server-jre-8u181-linux-x64.tar.gz
+ARG JAVAJRE_URL=https://d3pxv6yz143wms.cloudfront.net/${JAVAJRE_VERSION}/amazon-corretto-${JAVAJRE_VERSION}-linux-x64.tar.gz
 
 # Define working directory.
 WORKDIR /tmp
@@ -31,16 +34,14 @@ WORKDIR /tmp
 # Download JDownloader 2.
 RUN \
     mkdir -p /defaults && \
-    wget ${JDOWNLOADER_URL} -O /defaults/JDownloader.jar && \
-    chmod +x /defaults/JDownloader.jar
+    wget ${JDOWNLOADER_URL} -O /defaults/JDownloader.jar
 
 # Download and install Oracle JRE.
 # NOTE: This is needed only for the 7-Zip-JBinding workaround.
 RUN \
     add-pkg --virtual build-dependencies curl && \
     mkdir /opt/jre && \
-    curl -# -L -H "Cookie: oraclelicense=accept-securebackup-cookie" ${ORACLEJAVAJRE_URL} | tar -xz --strip 2 -C /opt/jre jdk1.8.0_181/jre && \
-    rm -r /opt/jre/lib/oblique-fonts && \
+    curl -# -L ${JAVAJRE_URL} | tar -xz --strip 2 -C /opt/jre amazon-corretto-${JAVAJRE_VERSION}-linux-x64/jre && \
     del-pkg build-dependencies
 
 # Install dependencies.
@@ -52,7 +53,11 @@ RUN \
         # workaround.
         #openjdk8-jre \
         libstdc++ \
-        ttf-dejavu
+        ttf-dejavu \
+        # For ffmpeg and ffprobe tools.
+        ffmpeg \
+        # For rtmpdump tool.
+        rtmpdump
 
 # Maximize only the main/initial window.
 RUN \
@@ -74,6 +79,10 @@ ENV APP_NAME="JDownloader 2" \
 # Define mountable directories.
 VOLUME ["/config"]
 VOLUME ["/output"]
+
+# Expose ports.
+#   - 3129: For MyJDownloader in Direct Connection mode.
+EXPOSE 3129
 
 # Metadata.
 LABEL \

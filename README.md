@@ -34,12 +34,16 @@ your valuable time every day!
       * [User/Group IDs](#usergroup-ids)
       * [Accessing the GUI](#accessing-the-gui)
       * [Security](#security)
+         * [SSVNC](#ssvnc)
          * [Certificates](#certificates)
          * [VNC Password](#vnc-password)
-      * [Shell Access](#shell-access)
       * [Reverse Proxy](#reverse-proxy)
          * [Routing Based on Hostname](#routing-based-on-hostname)
          * [Routing Based on URL Path](#routing-based-on-url-path)
+      * [Shell Access](#shell-access)
+      * [MyJDownloader](#myjdownloader)
+         * [Direct Connection](#direct-connection)
+      * [Click'n'Load](#clicknload)
       * [Support or Contact](#support-or-contact)
 
 ## Quick Start
@@ -125,6 +129,7 @@ container cannot be changed, but you are free to use any port on the host side.
 |------|-----------------|-------------|
 | 5800 | Mandatory | Port used to access the application's GUI via the web interface. |
 | 5900 | Optional | Port used to access the application's GUI via the VNC protocol.  Optional if no VNC client is used. |
+| 3129 | Optional | Port used by *MyJDownloader* mobile applications and browser extensions to establish a direct connect to the JDownloader Docker container instance.  Port needs to be exposed only if *MyJDownloader* is enabled and configured in *Direct Connection* mode.  **NOTE**: Since this port is being reported to the *MyJDownloader* online service, the port mapped on the host side **must** be the same (i.e. 3129). |
 
 ### Changing Parameters of a Running Container
 
@@ -197,7 +202,7 @@ container image.
 
   1.  Open the *Docker* application.
   2.  Click on *Registry* in the left pane.
-  3.  In the search bar, type the name of the container (`jlesage/docker-jdownloader-2`).
+  3.  In the search bar, type the name of the container (`jlesage/jdownloader-2`).
   4.  Select the image, click *Download* and then choose the `latest` tag.
   5.  Wait for the download to complete.  A  notification will appear once done.
   6.  Click on *Container* in the left pane.
@@ -274,6 +279,25 @@ few VNC clients support this method.  [SSVNC] is one of them.
 
 [SSVNC]: http://www.karlrunge.com/x11vnc/ssvnc.html
 
+### SSVNC
+
+[SSVNC] is a VNC viewer that adds encryption security to VNC connections.
+
+While the Linux version of [SSVNC] works well, the Windows version has some
+issues.  At the time of writing, the latest version `1.0.30` is not functional,
+as a connection fails with the following error:
+```
+ReadExact: Socket error while reading
+```
+However, for your convienence, an unoffical and working version is provided
+here:
+
+https://github.com/jlesage/docker-baseimage-gui/raw/master/tools/ssvnc_windows_only-1.0.30-r1.zip
+
+The only difference with the offical package is that the bundled version of
+`stunnel` has been upgraded to version `5.49`, which fixes the connection
+problems.
+
 ### Certificates
 
 Here are the certificate files needed by the container.  By default, when they
@@ -312,17 +336,6 @@ connection to prevent sending the password in clear over an unencrypted channel.
 the Remote Framebuffer Protocol [RFC](https://tools.ietf.org/html/rfc6143) (see
 section [7.2.2](https://tools.ietf.org/html/rfc6143#section-7.2.2)).  Any
 characters beyhond the limit are ignored.
-
-## Shell Access
-
-To get shell access to a the running container, execute the following command:
-
-```
-docker exec -ti CONTAINER sh
-```
-
-Where `CONTAINER` is the ID or the name of the container used during its
-creation (e.g. `crashplan-pro`).
 
 ## Reverse Proxy
 
@@ -420,6 +433,58 @@ server {
 }
 
 ```
+## Shell Access
+
+To get shell access to a the running container, execute the following command:
+
+```
+docker exec -ti CONTAINER sh
+```
+
+Where `CONTAINER` is the ID or the name of the container used during its
+creation (e.g. `crashplan-pro`).
+
+## MyJDownloader
+
+[MyJDownloader](https://my.jdownloader.org) is an online service providing
+remote access to your JDownloader with Web Interface, Android App, iPhone App,
+Windows Phone App and Browser Extensions.  It allows to check download status,
+add links and solve captchas from everywhere.
+
+To activate, open the JDownloader UI and click the *My.JDownloader* tab.
+
+### Direct Connection
+
+When using MyJDownloader from a device on the same local network as the
+JDownloader Docker container instance, *Direct Connection* mode can be enabled
+to reduce the latency and increase the bandwidth.  With this mode, instead of
+going through the cloud, the communication is done through a direct connection
+between the device and JDownloader.
+
+The default container's network being in *bridge* mode, the *Direct Connection*
+mode is not automatically detected/activated and the following steps are required:
+
+  * Make sure the container's port `3129` is mapped to the host port `3129`.
+    This is done by adding the parameter `-p 3129:3129` to the `docker run`
+    command.
+  * Open the JDownloader UI.
+  * Go to *Settings*->*Advanced Settings*.
+  * Search for `MyJDownloaderSettings`.
+  * Set `Custom Device IPs` to the IP address of the host running the container,
+    between double quotes (e.g. `"192.168.1.1"`).
+  * Change the `Direct Connection Mode` to `Allow lan/wan connections with
+    manual port forwarding`.
+  * Restart JDownloader (*File*->*Restart*).
+
+## Click'n'Load
+
+The easiest way to use the [Click'n'Load] feature is by installing the
+[MyJDownloader browser extension].  With this method, the browser extension
+handles POST requests to `http://127.0.0.1:9666` and forward the links to
+JDownloader via the *MyJDownloader* service.
+
+[Click'n'Load]: http://jdownloader.org/knowledge/wiki/glossary/cnl2
+[MyJDownloader browser extension]: https://my.jdownloader.org/apps/
 
 [TimeZone]: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
